@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-col">
-    <div className="fixed h-16 w-full border-b flex items-center justify-between px-10">
+    <div className="fixed h-16 w-full border-b flex items-center justify-between px-10 bg-white">
       <div className="w-10">
         <Image src="/images/logo.png" width={500} height={500} alt="logo" />
       </div>
