@@ -10,9 +10,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
       <AvatarDropdown />
     </div>
-    <div className="flex flex-row h-screen pt-16">
+    <div className="flex flex-row h-screen pt-16 items-start">
       <Sidebar />
-      <main className="w-full">{children}</main>
+      <main className="w-full max-w-[calc(100vw-200px)]">{children}</main>
     </div>
   </div>
 }

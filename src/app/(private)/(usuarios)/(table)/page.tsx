@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { config } from "./config";
+import { config } from "../config";
 import { prisma } from "@/lib/prisma";
+import { Table } from "./table";
 
 export default async function Home() {
   const users = await prisma.user.findMany()
@@ -15,9 +16,7 @@ export default async function Home() {
         <Button>{config.conteudo.tabela.botaoNovo}</Button>
       </div>
       <div>
-        {users.map(user => (
-          <div key={user.id}>{user.id} {user.name} {user.email}</div>
-        ))}
+        <Table data={users} />
       </div>
     </div>
   );
