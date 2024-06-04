@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { config } from "./config";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  const users = await prisma.user.findMany()
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-4">
@@ -11,7 +14,11 @@ export default function Home() {
         </div>
         <Button>{config.conteudo.tabela.botaoNovo}</Button>
       </div>
-      <div>Conteúdo</div>
+      <div>
+        {users.map(user => (
+          <div key={user.id}>{user.id} {user.name} {user.email}</div>
+        ))}
+      </div>
     </div>
   );
 }
