@@ -6,6 +6,9 @@ interface MenuItemProps {
   href: string;
 }
 
-export const menu: MenuItemProps[] = [
+export const menuDefault: MenuItemProps[] = []
+
+export const menuAdmin: MenuItemProps[] = [
+  ...menuDefault,
   { title: "Usuários", icon: Users, href: "/" }
 ]

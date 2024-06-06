@@ -1,15 +1,21 @@
 "use client"
 
-import { menu } from "@/config/menu";
+import { menuDefault, menuAdmin } from "@/config/menu";
+import { ROLES } from "@/enums/roles";
 import { LogOut, Users } from "lucide-react";
+import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface SidebarProps { }
+interface SidebarProps {
+  session: Session
+}
 
-export function Sidebar({ }: SidebarProps) {
+export function Sidebar({ session }: SidebarProps) {
   const path = usePathname()
+
+  const menu = session.user.role === ROLES.ADMIN ? menuAdmin : menuDefault
 
   return <div className="h-full w-64 border-r p-5">
     {menu.map(item => (
