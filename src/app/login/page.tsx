@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { LoginForm } from "@/components/auth/login-form";
 import Image from "next/image";
 
 export default function Page() {
@@ -9,11 +8,7 @@ export default function Page() {
       <div className="w-36">
         <Image src="/images/logo.png" width={500} height={500} alt="Logo" />
       </div>
-      <div className="w-full space-y-3 my-5">
-        <Input placeholder="Email" className="w-full" />
-        <Input placeholder="Senha" className="w-full" />
-        <Button className="w-full">Entrar</Button>
-      </div>
+      <LoginForm />
     </div>
   </div>
 }

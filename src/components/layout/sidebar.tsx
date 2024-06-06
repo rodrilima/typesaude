@@ -2,6 +2,7 @@
 
 import { menu } from "@/config/menu";
 import { LogOut, Users } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -18,7 +19,10 @@ export function Sidebar({ }: SidebarProps) {
         </div>
       </Link>
     ))}
-    <div className="flex items-center text-sm cursor-pointer hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md">
+    <div
+      onClick={() => signOut()}
+      className="flex items-center text-sm cursor-pointer hover:bg-accent hover:text-accent-foreground px-3 py-2 rounded-md"
+    >
       <LogOut size={18} className="mr-2" /> Sair
     </div>
   </div>
