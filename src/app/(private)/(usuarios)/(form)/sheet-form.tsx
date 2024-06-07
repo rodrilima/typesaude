@@ -9,7 +9,7 @@ import { config } from "../config";
 interface SheetFormProps { }
 
 export function SheetForm({ }: SheetFormProps) {
-  return <SheetContent className="min-w-[550px]">
+  return <SheetContent className="w-full md:min-w-[550px]">
     <SheetHeader>
       <SheetTitle>{config.conteudo.formulario.titulo}</SheetTitle>
       <SheetDescription>{config.conteudo.formulario.descricao}</SheetDescription>
