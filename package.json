@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test:u": "dotenv -e .env.test -- pnpm vitest",
+    "test:i": "dotenv -e .env.test -- pnpm vitest --config ./__tests__/integrations/vitest.config.ts",
+    "migrate:test": "dotenv -e .env.test -- pnpm prisma migrate deploy"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.4.2",
@@ -41,6 +43,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "dotenv-cli": "7.4",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",
