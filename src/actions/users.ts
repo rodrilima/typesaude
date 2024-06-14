@@ -9,12 +9,14 @@ import {
 } from "@/types/actions/users";
 import { User as Model } from "@prisma/client";
 import { getServerSession } from "next-auth";
+import bcrypt from "bcrypt"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const model = prisma.user
 const singular = 'usuário'
 const plural = 'usuários'
 
-export async function create(data: CreateResource): Promise<DefaultReturn<Model> | ErrorReturn> {
+export async function create(data: CreateResource): Promise<DefaultReturn<Omit<Model, 'password'>> | ErrorReturn> {
   try {
     const session = await getServerSession()
 
@@ -22,9 +24,20 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Model>
       return { error: ErrorsMessages.not_authorized }
     }
 
-    const response = await model.create({ data })
-    return { data: response }
+    const response = await model.create({
+      data: { ...data, password: bcrypt.hashSync(data.password, 10) }
+    })
+
+    const { password, ...safeResponse } = response
+
+    return { data: safeResponse }
   } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
+      const uniqueValue = (error.meta?.target as string[] | null)?.[0]
+      if (uniqueValue === "email")
+        return { error: `Já existe um usuário com este email` }
+    }
+
     console.error(error)
     return { error: `Erro no sistema ao criar um ${singular}. Entre em contato com nosso time.` }
   }
@@ -39,14 +52,20 @@ export async function find(): Promise<ListReturn | ErrorReturn> {
     }
 
     const response = await model.findMany()
-    return { data: response }
+
+    const safeResponse = response.map(user => {
+      const { password, ...safeUser } = user
+      return safeUser
+    })
+
+    return { data: safeResponse }
   } catch (error) {
     console.error(error)
     return { error: `Erro no sistema ao listar ${plural}. Entre em contato com nosso time.` }
   }
 }
 
-export async function update(data: UpdateResource): Promise<DefaultReturn<Model> | ErrorReturn> {
+export async function update(data: UpdateResource): Promise<DefaultReturn<Omit<Model, 'password'>> | ErrorReturn> {
   try {
     const session = await getServerSession()
 
@@ -56,9 +75,25 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Model>
 
     const { id, ...dataToUpdate } = data
 
-    const response = await model.update({ where: { id }, data: dataToUpdate })
-    return { data: response }
+    if (dataToUpdate.password) {
+      dataToUpdate.password = bcrypt.hashSync(dataToUpdate.password, 10)
+    }
+
+    const response = await model.update({
+      where: { id },
+      data: dataToUpdate
+    })
+
+    const { password, ...safeResponse } = response
+
+    return { data: safeResponse }
   } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
+      const uniqueValue = (error.meta?.target as string[] | null)?.[0]
+      if (uniqueValue === "email")
+        return { error: `Já existe um usuário com este email` }
+    }
+
     console.error(error)
     return { error: `Erro no sistema ao atualizar um ${singular}. Entre em contato com nosso time.` }
   }

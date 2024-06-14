@@ -6,8 +6,19 @@ import {
   UpdateUser as UpdateResource,
 } from "@/types/actions/users";
 import { User as Model } from "@prisma/client"
+import { Session } from "next-auth";
 
 const model = prisma.user
+
+vi.mock("next-auth", () => ({
+  getServerSession: () => {
+    const session: Session = {
+      expires: "",
+      user: { role: ROLES.ADMIN }
+    }
+    return session
+  }
+}))
 
 describe('Integration: Users', () => {
   let defaultResource: Model
@@ -67,5 +78,119 @@ describe('Integration: Users', () => {
     })
 
     expect(removedResource).toBeNull()
+  })
+
+  test('deve criptografar senha ao criar um usuário', async () => {
+    const dataToCreate: CreateResource = {
+      email: "contato@type.dev.br",
+      password: "typedev",
+      name: "Admin Typedev",
+      role: ROLES.ADMIN
+    }
+
+    const response = await create(dataToCreate)
+
+    if ("error" in response) throw Error(response.error)
+
+    const createdUser = await model.findUnique({
+      where: {
+        id: response.data.id
+      }
+    })
+
+    expect(createdUser?.password).toBeTruthy()
+    expect(createdUser?.password).not.toBe(dataToCreate.password)
+  })
+
+  test('deve criptografar ao atualizar a senha de um usuário', async () => {
+    const dataToUpdate: UpdateResource = {
+      id: defaultResource.id,
+      password: "typedev",
+    }
+
+    const response = await update(dataToUpdate)
+
+    if ("error" in response) throw Error(response.error)
+
+    const updatedUser = await model.findUnique({
+      where: {
+        id: response.data.id
+      }
+    })
+
+    expect(updatedUser?.password).toBeTruthy()
+    expect(updatedUser?.password).not.toBe(dataToUpdate.password)
+    expect(updatedUser?.password).not.toBe(defaultResource.password)
+  })
+
+  test('não deve ser possível criar um usuário com email que já existe', async () => {
+    const dataToCreate: CreateResource = {
+      email: "test@teste.com",
+      password: "typedev",
+      name: "Admin Typedev",
+      role: ROLES.ADMIN
+    }
+
+    const response = await create(dataToCreate)
+
+    if ("data" in response) throw Error("Deveria dar erro")
+
+    expect(response.error).toBe("Já existe um usuário com este email")
+  })
+
+  test('não deve ser possível atualizar o email para um já cadastrado', async () => {
+    const secondUser = await model.create({
+      data: {
+        email: "test2@teste.com",
+        password: "test"
+      }
+    })
+
+    const dataToUpdate: UpdateResource = {
+      id: secondUser.id,
+      email: "test@teste.com"
+    }
+
+    const response = await update(dataToUpdate)
+
+    if ("data" in response) throw Error("Deveria dar erro")
+
+    expect(response.error).toBe("Já existe um usuário com este email")
+  })
+
+  test('não deve retornar a propriedade password ao criar um usuário', async () => {
+    const dataToCreate: CreateResource = {
+      email: "contato@type.dev.br",
+      password: "typedev",
+      name: "Admin Typedev",
+      role: ROLES.ADMIN
+    }
+
+    const response = await create(dataToCreate)
+
+    if ("error" in response) throw Error(response.error)
+
+    expect(response.data).not.toHaveProperty('password')
+  })
+
+  test('não deve retornar a propriedade password ao listar usuários', async () => {
+    const response = await find()
+
+    if ("error" in response) throw Error(response.error)
+
+    expect(response.data[0]).not.toHaveProperty('password')
+  })
+
+  test('não deve retornar a propriedade password ao atualizar a senha de um usuário', async () => {
+    const dataToUpdate: UpdateResource = {
+      id: defaultResource.id,
+      password: "123456"
+    }
+
+    const response = await update(dataToUpdate)
+
+    if ("error" in response) throw Error(response.error)
+
+    expect(response.data).not.toHaveProperty('password')
   })
 })

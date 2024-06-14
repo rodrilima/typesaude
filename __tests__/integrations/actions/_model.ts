@@ -6,8 +6,19 @@ import {
   UpdateUser as UpdateResource,
 } from "@/types/actions/users";
 import { User as Model } from "@prisma/client"
+import { Session } from "next-auth";
 
 const model = prisma.user
+
+vi.mock("next-auth", () => ({
+  getServerSession: () => {
+    const session: Session = {
+      expires: "",
+      user: { role: ROLES.EDITOR }
+    }
+    return session
+  }
+}))
 
 describe('Integration: Users', () => {
   let defaultResource: Model
