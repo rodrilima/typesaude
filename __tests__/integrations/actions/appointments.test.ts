@@ -1,4 +1,4 @@
-import { create, find, remove, update } from "@/actions/appointments";
+import { create, find, findAllAppointmentsInDay, isTimeAvailable, remove, update } from "@/actions/appointments";
 import { APPOINTMENT_STATUS } from "@/enums/appointment-status";
 import { ROLES } from "@/enums/roles";
 import { prisma } from "@/lib/prisma"
@@ -92,5 +92,57 @@ describe('Integration: Agendamento', () => {
     })
 
     expect(removedResource).toBeNull()
+  })
+
+  test('deve ser possível listar todos os agendamentos de um médico em um determinado dia', async () => {
+    const response = await findAllAppointmentsInDay(
+      new Date("2025-06-02T09:00"),
+      defaultResource.doctorId
+    )
+
+    if ("error" in response) throw new Error(response.error)
+
+    expect(response.data.length).toBe(1)
+  })
+
+  test('deve retornar um horário como indisponível se existir um agendamento ATIVO no mesmo horário apra o mesmo médico', async () => {
+    const casesToTest = [
+      new Date("2025-06-02T14:46"),
+      new Date("2025-06-02T15:00"),
+      new Date("2025-06-02T15:14"),
+    ]
+
+    for (const toTest of casesToTest) {
+      const response = await isTimeAvailable(
+        toTest,
+        15,
+        defaultResource.doctorId
+      )
+
+      if ("error" in response) throw new Error(response.error)
+
+      expect(response.data).toBe(false)
+    }
+  })
+
+  test('deve retornar um horário como disponível se não existir um agendamento ATIVO no mesmo horário apra o mesmo médico', async () => {
+    const casesToTest = [
+      new Date("2025-06-02T14:00"),
+      new Date("2025-06-02T14:45"),
+      new Date("2025-06-02T15:15"),
+      new Date("2025-06-02T16:00"),
+    ]
+
+    for (const toTest of casesToTest) {
+      const response = await isTimeAvailable(
+        toTest,
+        15,
+        defaultResource.doctorId
+      )
+
+      if ("error" in response) throw new Error(response.error)
+
+      expect(response.data).toBe(true)
+    }
   })
 })
