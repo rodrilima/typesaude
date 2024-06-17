@@ -145,4 +145,43 @@ describe('Integration: Agendamento', () => {
       expect(response.data).toBe(true)
     }
   })
+
+  test('deve validar correatamente um horário na criação de um agendamento', async () => {
+    const dataToCreate: CreateResource = {
+      dateTime: new Date('2025-06-02T15:00'),
+      doctorId: defaultResource.doctorId,
+      patientId: defaultResource.patientId,
+      serviceId: defaultResource.serviceId,
+      status: APPOINTMENT_STATUS.SCHEDULED
+    }
+
+    const response = await create(dataToCreate)
+
+    if ("data" in response) throw Error("Deveria dar erro")
+
+    expect(response.error).toBe("O horário não esta disponível. Tente outro.")
+  })
+
+  test('deve validar correatamente um horário na atualização de um agendamento', async () => {
+    const newAppointment = await model.create({
+      data: {
+        dateTime: new Date('2025-06-03T15:00'),
+        doctorId: defaultResource.doctorId,
+        patientId: defaultResource.patientId,
+        serviceId: defaultResource.serviceId,
+        status: APPOINTMENT_STATUS.SCHEDULED
+      }
+    })
+
+    const dataToUpdate: UpdateResource = {
+      id: newAppointment.id,
+      dateTime: new Date('2025-06-02T15:00'),
+    }
+
+    const response = await update(dataToUpdate)
+
+    if ("data" in response) throw Error("Deveria dar erro")
+
+    expect(response.error).toBe("O horário não esta disponível. Tente outro.")
+  })
 })

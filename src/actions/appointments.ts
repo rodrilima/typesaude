@@ -25,6 +25,28 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Model>
       return { error: ErrorsMessages.not_authorized }
     }
 
+    const service = await prisma.service.findUnique({
+      where: {
+        id: data.serviceId
+      },
+      select: {
+        duration: true
+      }
+    })
+
+    if (!service) {
+      return { error: "Serviço não foi encontrado" }
+    }
+
+    const isTimeAvailableResponse = await isTimeAvailable(
+      data.dateTime,
+      service.duration,
+      data.doctorId,
+    )
+
+    if ("error" in isTimeAvailableResponse) return { error: "Erro ao verficiar disponibilidade do horário. Entre em contato com nosso time." }
+    if (!isTimeAvailableResponse.data) return { error: "O horário não esta disponível. Tente outro." }
+
     const response = await model.create({ data })
     return { data: response }
   } catch (error) {
@@ -52,6 +74,45 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Model>
     }
 
     const { id, ...dataToUpdate } = data
+
+    if (dataToUpdate.dateTime) {
+      const appointment = await model.findUnique({
+        where: {
+          id
+        },
+        select: {
+          doctorId: true,
+          serviceId: true
+        }
+      })
+
+      if (!appointment) {
+        return { error: "Agendamento não foi encontrado" }
+      }
+
+
+      const service = await prisma.service.findUnique({
+        where: {
+          id: dataToUpdate.serviceId ?? appointment.serviceId
+        },
+        select: {
+          duration: true
+        }
+      })
+
+      if (!service) {
+        return { error: "Serviço não foi encontrado" }
+      }
+
+      const isTimeAvailableResponse = await isTimeAvailable(
+        dataToUpdate.dateTime,
+        service.duration,
+        appointment.doctorId,
+      )
+
+      if ("error" in isTimeAvailableResponse) return { error: "Erro ao verficiar disponibilidade do horário. Entre em contato com nosso time." }
+      if (!isTimeAvailableResponse.data) return { error: "O horário não esta disponível. Tente outro." }
+    }
 
     const response = await model.update({ where: { id }, data: dataToUpdate })
     return { data: response }
