@@ -1,5 +1,6 @@
-import { create, remove, update } from "@/actions/users"
+import { create, remove, update } from "@/actions/appointments"
 import { ErrorsMessages } from "@/config/messages"
+import { APPOINTMENT_STATUS } from "@/enums/appointment-status"
 import { ROLES } from "@/enums/roles"
 import { Session } from "next-auth"
 
@@ -27,10 +28,11 @@ vi.mock("next-auth", () => ({
 describe("Unit: Users", () => {
   test("não deve ser possível criar um recurso sendo um VIEWER", async () => {
     const response = await create({
-      email: "teste@teste.com",
-      password: "teste",
-      name: "Teste",
-      role: ROLES.VIEWER
+      doctorId: 1,
+      patientId: 1,
+      serviceId: 1,
+      dateTime: new Date(),
+      status: APPOINTMENT_STATUS.COMPLETED
     })
 
     if ("data" in response) throw new Error("Deveria retornar um erro")
@@ -41,7 +43,7 @@ describe("Unit: Users", () => {
   test("não deve ser possível atualizar um recurso sendo um VIEWER", async () => {
     const response = await update({
       id: 1,
-      name: "Teste",
+      status: APPOINTMENT_STATUS.COMPLETED
     })
 
     if ("data" in response) throw new Error("Deveria retornar um erro")
