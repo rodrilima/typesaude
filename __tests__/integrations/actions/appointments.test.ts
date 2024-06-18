@@ -105,7 +105,7 @@ describe('Integration: Agendamento', () => {
     expect(response.data.length).toBe(1)
   })
 
-  test('deve retornar um horário como indisponível se existir um agendamento ATIVO no mesmo horário apra o mesmo médico', async () => {
+  test('deve retornar um horário como indisponível se existir um agendamento ATIVO no mesmo horário para o mesmo médico', async () => {
     const casesToTest = [
       new Date("2025-06-02T14:46"),
       new Date("2025-06-02T15:00"),
@@ -125,7 +125,7 @@ describe('Integration: Agendamento', () => {
     }
   })
 
-  test('deve retornar um horário como disponível se não existir um agendamento ATIVO no mesmo horário apra o mesmo médico', async () => {
+  test('deve retornar um horário como disponível se não existir um agendamento ATIVO no mesmo horário para o mesmo médico', async () => {
     const casesToTest = [
       new Date("2025-06-02T14:00"),
       new Date("2025-06-02T14:45"),
@@ -146,7 +146,7 @@ describe('Integration: Agendamento', () => {
     }
   })
 
-  test('deve validar correatamente um horário na criação de um agendamento', async () => {
+  test('deve validar corretamente um horário na criação de um agendamento', async () => {
     const dataToCreate: CreateResource = {
       dateTime: new Date('2025-06-02T15:00'),
       doctorId: defaultResource.doctorId,
@@ -162,7 +162,7 @@ describe('Integration: Agendamento', () => {
     expect(response.error).toBe("O horário não esta disponível. Tente outro.")
   })
 
-  test('deve validar correatamente um horário na atualização de um agendamento', async () => {
+  test('deve validar corretamente um horário na atualização de um agendamento', async () => {
     const newAppointment = await model.create({
       data: {
         dateTime: new Date('2025-06-03T15:00'),

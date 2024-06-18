@@ -8,10 +8,10 @@ async function truncatedAllTables() {
     WHERE schemaname = 'public'
     AND tablename != '_prisma_migrations'
   `
-  const tuncatePromises = tables.map(
+  const truncatePromises = tables.map(
     table => prisma.$executeRawUnsafe(`TRUNCATE TABLE "${table.tablename}" CASCADE;`)
   )
-  await Promise.all(tuncatePromises)
+  await Promise.all(truncatePromises)
   console.info("All tables truncated")
 }
 

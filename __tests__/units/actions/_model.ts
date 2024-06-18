@@ -25,7 +25,7 @@ vi.mock("next-auth", () => ({
 }))
 
 describe("Unit: Users", () => {
-  test("não deve ser possível criar um recruso sem ser EDITOR", async () => {
+  test("não deve ser possível criar um recurso sem ser EDITOR", async () => {
     const response = await create({
       email: "teste@teste.com",
       password: "teste",
