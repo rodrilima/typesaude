@@ -149,8 +149,6 @@ export async function findAllAppointmentsInDay(
     const endDateReference = new Date(datetime)
     endDateReference.setUTCHours(26, 59, 59)
 
-    console.log(startDateReference, endDateReference)
-
     const response = await model.findMany({
       where: {
         doctorId,
