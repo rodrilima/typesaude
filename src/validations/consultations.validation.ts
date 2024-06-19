@@ -2,8 +2,8 @@ import { z } from "zod"
 
 export const createConsultationValidation = z.object({
   initialDateTime: z.date({ required_error: "Data e hora inicial são obrigatórias." }),
-  finalDateTime: z.date().optional(),
-  description: z.string().optional(),
+  finalDateTime: z.date().optional().nullable(),
+  description: z.string().optional().nullable(),
   doctorId: z
     .number({ required_error: "Médico é obrigatório." })
     .int("ID do médico deve ser um número inteiro.")

@@ -1,4 +1,5 @@
 import { create, find, remove, update } from "@/actions/consultations";
+import { APPOINTMENT_STATUS } from "@/enums/appointment-status";
 import { ROLES } from "@/enums/roles";
 import { prisma } from "@/lib/prisma"
 import {
@@ -93,5 +94,75 @@ describe('Integration: Consultations', () => {
     })
 
     expect(removedResource).toBeNull()
+  })
+
+  test('deve alterar o status do agendamento para COMPLETED ao criar uma consulta', async () => {
+    const appointment = await prisma.appointment.create({
+      data: {
+        dateTime: new Date("2025-06-02T14:00"),
+        doctorId: defaultResource.doctorId,
+        patientId: defaultResource.patientId,
+        serviceId: defaultResource.serviceId,
+        status: APPOINTMENT_STATUS.SCHEDULED
+      }
+    })
+
+    const dataToCreate: CreateResource = {
+      doctorId: defaultResource.doctorId,
+      patientId: defaultResource.patientId,
+      serviceId: defaultResource.serviceId,
+      appointmentId: appointment.id,
+      description: "",
+      finalDateTime: null,
+      initialDateTime: new Date("2025-06-02T14:00"),
+    }
+
+    await create(dataToCreate)
+
+    const updatedAppointment = await prisma.appointment.findUnique({
+      where: {
+        id: appointment.id
+      }
+    })
+
+    expect(updatedAppointment?.status).toBe(APPOINTMENT_STATUS.COMPLETED)
+  })
+
+  test('deve alterar o status do agendamento para COMPLETED ao atualizar o ID de agendamento de uma consulta', async () => {
+    const appointment = await prisma.appointment.create({
+      data: {
+        dateTime: new Date("2025-06-02T14:00"),
+        doctorId: defaultResource.doctorId,
+        patientId: defaultResource.patientId,
+        serviceId: defaultResource.serviceId,
+        status: APPOINTMENT_STATUS.SCHEDULED
+      }
+    })
+
+    const newConsultation = await prisma.consultation.create({
+      data: {
+        doctorId: defaultResource.doctorId,
+        patientId: defaultResource.patientId,
+        serviceId: defaultResource.serviceId,
+        description: "",
+        finalDateTime: null,
+        initialDateTime: new Date("2025-06-02T14:00"),
+      }
+    })
+
+    const dataToUpdate: UpdateResource = {
+      id: newConsultation.id,
+      appointmentId: appointment.id
+    }
+
+    await update(dataToUpdate)
+
+    const updatedAppointment = await prisma.appointment.findUnique({
+      where: {
+        id: appointment.id
+      }
+    })
+
+    expect(updatedAppointment?.status).toBe(APPOINTMENT_STATUS.COMPLETED)
   })
 })

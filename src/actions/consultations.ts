@@ -1,4 +1,5 @@
 import { ErrorsMessages } from "@/config/messages";
+import { APPOINTMENT_STATUS } from "@/enums/appointment-status";
 import { ROLES } from "@/enums/roles";
 import { prisma } from "@/lib/prisma";
 import { DefaultReturn, ErrorReturn } from "@/types/actions/_general";
@@ -30,6 +31,18 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Model>
     }
 
     const response = await model.create({ data })
+
+    try {
+      if (data.appointmentId) {
+        await prisma.appointment.update({
+          where: { id: data.appointmentId },
+          data: { status: APPOINTMENT_STATUS.COMPLETED }
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
     return { data: response }
   } catch (error) {
     console.error(error)
@@ -64,6 +77,18 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Model>
     const { id, ...dataToUpdate } = data
 
     const response = await model.update({ where: { id }, data: dataToUpdate })
+
+    try {
+      if (data.appointmentId) {
+        await prisma.appointment.update({
+          where: { id: data.appointmentId },
+          data: { status: APPOINTMENT_STATUS.COMPLETED }
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
     return { data: response }
   } catch (error) {
     console.error(error)
