@@ -7,6 +7,7 @@ import {
   UpdateConsultation as UpdateResource,
   ListReturn,
 } from "@/types/actions/consultations";
+import { createConsultationValidation, updateConsultationValidation } from "@/validations/consultations.validation";
 import { Consultation as Model } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
@@ -20,6 +21,12 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Model>
 
     if (session?.user.role === ROLES.VIEWER) {
       return { error: ErrorsMessages.not_authorized }
+    }
+
+    const validation = createConsultationValidation.safeParse(data)
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
     }
 
     const response = await model.create({ data })
@@ -46,6 +53,12 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Model>
 
     if (session?.user.role === ROLES.VIEWER) {
       return { error: ErrorsMessages.not_authorized }
+    }
+
+    const validation = updateConsultationValidation.safeParse(data)
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
     }
 
     const { id, ...dataToUpdate } = data

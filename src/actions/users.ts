@@ -11,6 +11,7 @@ import { User as Model } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import bcrypt from "bcrypt"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { createUserValidation, updateUserValidation } from "@/validations/users.validation";
 
 const model = prisma.user
 const singular = 'usuário'
@@ -22,6 +23,12 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Omit<M
 
     if (session?.user.role !== ROLES.ADMIN) {
       return { error: ErrorsMessages.not_authorized }
+    }
+
+    const validation = createUserValidation.safeParse(data)
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
     }
 
     const response = await model.create({
@@ -71,6 +78,12 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Omit<M
 
     if (session?.user.role !== ROLES.ADMIN) {
       return { error: ErrorsMessages.not_authorized }
+    }
+
+    const validation = updateUserValidation.safeParse(data)
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
     }
 
     const { id, ...dataToUpdate } = data

@@ -1,7 +1,7 @@
 import { ROLES } from "@/enums/roles"
 import { z } from "zod"
 
-export const createValidation = z.object({
+export const createUserValidation = z.object({
   name: z
     .string({ required_error: "Nome é obrigatório." })
     .min(1, "Nome não pode ser em branco."),
@@ -18,7 +18,7 @@ export const createValidation = z.object({
   )
 })
 
-export const updateValidation = z.object({
+export const updateUserValidation = z.object({
   id: z
     .number({ required_error: "Nenhum ID foi fornecido." })
     .int("ID deve ser um número inteiro.")

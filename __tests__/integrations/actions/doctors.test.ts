@@ -34,11 +34,11 @@ describe('Integration: Doctors', () => {
 
   test('deve ser possível criar um médico', async () => {
     const dataToCreate: CreateResource = {
-      cpf: null,
-      crm: null,
+      cpf: "12345678910",
+      crm: "12345678910",
       email: "contato2@contato.com.br",
       name: "contato2",
-      phone: null
+      phone: "12345678910"
     }
 
     const response = await create(dataToCreate)

@@ -9,6 +9,7 @@ import {
   ListReturn,
   FindAllAppointmentsInDayReturn,
 } from "@/types/actions/appointments";
+import { createAppointmentValidation, findAllAppointmentsInDayValidation, isTimeAvailableValidation, updateAppointmentValidation } from "@/validations/appointments.validation";
 import { Appointment as Model } from "@prisma/client";
 import { isWithinInterval, addMinutes } from "date-fns"
 import { getServerSession } from "next-auth";
@@ -23,6 +24,12 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Model>
 
     if (session?.user.role === ROLES.VIEWER) {
       return { error: ErrorsMessages.not_authorized }
+    }
+
+    const validation = createAppointmentValidation.safeParse(data)
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
     }
 
     const service = await prisma.service.findUnique({
@@ -71,6 +78,12 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Model>
 
     if (session?.user.role === ROLES.VIEWER) {
       return { error: ErrorsMessages.not_authorized }
+    }
+
+    const validation = updateAppointmentValidation.safeParse(data)
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
     }
 
     const { id, ...dataToUpdate } = data
@@ -143,6 +156,16 @@ export async function findAllAppointmentsInDay(
   status?: APPOINTMENT_STATUS
 ): Promise<FindAllAppointmentsInDayReturn | ErrorReturn> {
   try {
+    const validation = findAllAppointmentsInDayValidation.safeParse({
+      datetime,
+      doctorId,
+      status
+    })
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
+    }
+
     const startDateReference = new Date(datetime)
     startDateReference.setUTCHours(3, 0, 0)
 
@@ -180,6 +203,17 @@ export async function isTimeAvailable(
   appointmentId?: number,
 ): Promise<{ data: boolean } | ErrorReturn> {
   try {
+    const validation = isTimeAvailableValidation.safeParse({
+      datetime,
+      duration,
+      doctorId,
+      appointmentId
+    })
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
+    }
+
     const allAppointmentsInDayResponse = await findAllAppointmentsInDay(
       datetime,
       doctorId,

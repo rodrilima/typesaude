@@ -7,6 +7,7 @@ import {
   UpdateDoctor as UpdateResource,
   ListReturn,
 } from "@/types/actions/doctors";
+import { createDoctorValidation, updateDoctorValidation } from "@/validations/doctors.validation";
 import { Doctor as Model } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
@@ -20,6 +21,12 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Model>
 
     if (session?.user.role === ROLES.VIEWER) {
       return { error: ErrorsMessages.not_authorized }
+    }
+
+    const validation = createDoctorValidation.safeParse(data)
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
     }
 
     const response = await model.create({ data })
@@ -49,6 +56,12 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Model>
     }
 
     const { id, ...dataToUpdate } = data
+
+    const validation = updateDoctorValidation.safeParse(data)
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
+    }
 
     const response = await model.update({ where: { id }, data: dataToUpdate })
     return { data: response }

@@ -16,7 +16,7 @@ export const createConsultationValidation = z.object({
     .number({ required_error: "Serviço é obrigatório." })
     .int("ID do serviço deve ser um número inteiro.")
     .positive("ID do serviço não pode ser um número negativo."),
-  appointmentId: z.number().optional(),
+  appointmentId: z.number().optional().nullable(),
 });
 
 export const updateConsultationValidation = z.object({

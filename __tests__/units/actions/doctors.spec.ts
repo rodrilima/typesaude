@@ -3,6 +3,8 @@ import { ErrorsMessages } from "@/config/messages"
 import { ROLES } from "@/enums/roles"
 import { Session } from "next-auth"
 
+let authRole = ROLES.VIEWER
+
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     user: {
@@ -18,13 +20,13 @@ vi.mock("next-auth", () => ({
   getServerSession: () => {
     const session: Session = {
       expires: "",
-      user: { role: ROLES.VIEWER }
+      user: { role: authRole }
     }
     return session
   }
 }))
 
-describe("Unit: Users", () => {
+describe("Unit: Médicos", () => {
   test("não deve ser possível criar um recurso sendo um VIEWER", async () => {
     const response = await create({
       cpf: "",
@@ -54,5 +56,34 @@ describe("Unit: Users", () => {
     const response = await remove(1)
 
     expect(response?.error).toBe(ErrorsMessages.not_authorized)
+  })
+
+  test("não deve ser possível criar um recurso com dados inválidos", async () => {
+    authRole = ROLES.ADMIN
+
+    const response = await create({
+      cpf: "",
+      crm: "",
+      email: "contato@contato.com.br",
+      name: "",
+      phone: ""
+    })
+
+    if ("data" in response) throw new Error("Deveria retornar um erro")
+
+    expect(response.error).toBe("Nome não pode ser em branco.")
+  })
+
+  test("não deve ser possível atualizar um recurso com dados inválidos", async () => {
+    authRole = ROLES.ADMIN
+
+    const response = await update({
+      id: 1,
+      email: "teste",
+    })
+
+    if ("data" in response) throw new Error("Deveria retornar um erro")
+
+    expect(response.error).toBe("Email inválido.")
   })
 })

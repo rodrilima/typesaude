@@ -4,7 +4,7 @@ import { z } from "zod"
 export const createAppointmentValidation = z.object({
   dateTime: z.date({ required_error: "Data e hora são obrigatórias." }),
   status: z
-    .nativeEnum(APPOINTMENT_STATUS, { message: "Opção inválida" })
+    .nativeEnum(APPOINTMENT_STATUS, { message: "Opção inválida para status." })
     .optional(),
   doctorId: z
     .number({ required_error: "Médico é obrigatório." })
@@ -27,7 +27,7 @@ export const updateAppointmentValidation = z.object({
     .positive("ID não pode ser um número negativo."),
   dateTime: z.date().optional(),
   status: z
-    .nativeEnum(APPOINTMENT_STATUS, { message: "Opção inválida" })
+    .nativeEnum(APPOINTMENT_STATUS, { message: "Opção inválida para status." })
     .optional(),
   doctorId: z
     .number()
@@ -54,7 +54,7 @@ export const findAllAppointmentsInDayValidation = z.object({
     .positive("ID do médico não pode ser um número negativo.")
     .optional(),
   status: z
-    .nativeEnum(APPOINTMENT_STATUS, { message: "Opção inválida" })
+    .nativeEnum(APPOINTMENT_STATUS, { message: "Opção inválida para status." })
     .optional(),
 })
 

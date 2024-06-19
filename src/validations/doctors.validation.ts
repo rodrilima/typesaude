@@ -13,7 +13,7 @@ export const createDoctorValidation = z.object({
     .string()
     .min(10, "Telefone deve ter no mínimo 10 caracteres.")
     .optional(),
-  email: z.string().email("Email inválido").optional(),
+  email: z.string().email("Email inválido.").optional(),
 });
 
 export const updateDoctorValidation = z.object({
@@ -33,5 +33,5 @@ export const updateDoctorValidation = z.object({
     .min(10, "Telefone deve ter no mínimo 10 caracteres.")
     .optional()
     .nullable(),
-  email: z.string().email("Email inválido").optional().nullable(),
+  email: z.string().email("Email inválido.").optional().nullable(),
 });

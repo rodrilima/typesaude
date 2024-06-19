@@ -29,7 +29,11 @@ export const updatePatientValidation = z.object({
     .optional()
     .nullable(),
   birth: z.date().optional().nullable(),
-  phone: z.string().optional().nullable(),
+  phone: z
+    .string()
+    .min(10, "Telefone deve ter no mínimo 10 caracteres.")
+    .optional()
+    .nullable(),
   email: z.string().email("Email inválido").optional().nullable(),
   address: z.string().optional().nullable(),
 });

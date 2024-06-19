@@ -10,6 +10,7 @@ import {
 import { Document as Model } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { put, del } from "@vercel/blob"
+import { createDocumentValidation, updateDocumentValidation } from "@/validations/documents.validation";
 
 const model = prisma.document
 const singular = 'documento'
@@ -25,6 +26,15 @@ export async function create(formData: CreateResource): Promise<DefaultReturn<Mo
 
     const file = formData.get('file') as File
     const path = formData.get('path') || "files"
+
+    const validation = createDocumentValidation.safeParse({
+      file,
+      path
+    })
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
+    }
 
     const { url } = await put(`${path}/${file.name}`, file, { access: 'public' });
 
@@ -59,12 +69,24 @@ export async function update(formData: UpdateResource): Promise<DefaultReturn<Mo
       return { error: ErrorsMessages.not_authorized }
     }
 
-    const id = Number(formData.get('id'))
+    const id = formData.get('id') ? Number(formData.get('id')) : undefined
     const userId = formData.get('userId') ? Number(formData.get('userId')) : undefined
     const consultationId = formData.get('consultationId') ? Number(formData.get('consultationId')) : undefined
     const file = formData.get('file') as File
     const path = formData.get('path') || "files"
     let url;
+
+    const validation = updateDocumentValidation.safeParse({
+      id,
+      file,
+      path,
+      userId,
+      consultationId
+    })
+
+    if (validation.error) {
+      return { error: validation.error.issues[0].message }
+    }
 
     if (file) {
       const originalDocument = await model.findUnique({
