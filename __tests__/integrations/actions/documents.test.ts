@@ -40,7 +40,7 @@ describe('Integration: Users', () => {
 
   test('deve ser possível criar um documento', async () => {
     const formData = new FormData()
-    const pathFile = path.resolve(__dirname, '..', '..', '..', '.temp', 'teste.txt')
+    const pathFile = path.resolve(__dirname, '..', '..', 'testdata', 'to-upload.txt')
     const blobFile = new Blob([readFileSync(pathFile)], { type: "text/plain" })
     formData.append('file', blobFile, "teste.txt")
 
@@ -61,7 +61,7 @@ describe('Integration: Users', () => {
 
   test('deve ser possível atualizar um documento', async () => {
     const formData = new FormData()
-    const pathFile = path.resolve(__dirname, '..', '..', '..', '.temp', 'teste.txt')
+    const pathFile = path.resolve(__dirname, '..', '..', 'testdata', 'to-upload.txt')
     const blobFile = new Blob([readFileSync(pathFile)], { type: "text/plain" })
     formData.append('file', blobFile, "teste.txt")
     formData.set('id', defaultResource.id.toString())

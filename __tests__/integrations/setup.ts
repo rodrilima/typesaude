@@ -2,6 +2,10 @@ import { prisma } from "@/lib/prisma";
 
 console.info(`Env: ${process.env.NODE_ENV}`)
 
+vi.mock('next/cache', () => ({
+  revalidatePath: () => {}
+}))
+
 async function truncatedAllTables() {
   const tables = await prisma.$queryRaw<{ tablename: string }[]>`
     SELECT tablename FROM pg_tables

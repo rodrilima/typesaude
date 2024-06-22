@@ -1,3 +1,5 @@
+"use server"
+
 import { ErrorsMessages } from "@/config/messages";
 import { ROLES } from "@/enums/roles";
 import { prisma } from "@/lib/prisma";
@@ -12,14 +14,17 @@ import { getServerSession } from "next-auth";
 import bcrypt from "bcrypt"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createUserValidation, updateUserValidation } from "@/validations/users.validation";
+import { authOptions } from "@/config/authOptions";
+import { revalidatePath } from "next/cache";
 
 const model = prisma.user
 const singular = 'usuário'
 const plural = 'usuários'
+const routePath = '/'
 
 export async function create(data: CreateResource): Promise<DefaultReturn<Omit<Model, 'password'>> | ErrorReturn> {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (session?.user.role !== ROLES.ADMIN) {
       return { error: ErrorsMessages.not_authorized }
@@ -37,6 +42,8 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Omit<M
 
     const { password, ...safeResponse } = response
 
+    revalidatePath(routePath)
+
     return { data: safeResponse }
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
@@ -52,7 +59,7 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Omit<M
 
 export async function find(): Promise<ListReturn | ErrorReturn> {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (session?.user.role !== ROLES.ADMIN) {
       return { error: ErrorsMessages.not_authorized }
@@ -74,7 +81,7 @@ export async function find(): Promise<ListReturn | ErrorReturn> {
 
 export async function update(data: UpdateResource): Promise<DefaultReturn<Omit<Model, 'password'>> | ErrorReturn> {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (session?.user.role !== ROLES.ADMIN) {
       return { error: ErrorsMessages.not_authorized }
@@ -97,6 +104,8 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Omit<M
       data: dataToUpdate
     })
 
+    revalidatePath(routePath)
+
     const { password, ...safeResponse } = response
 
     return { data: safeResponse }
@@ -114,13 +123,14 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Omit<M
 
 export async function remove(id: Model['id']): Promise<void | ErrorReturn> {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession(authOptions)
 
     if (session?.user.role !== ROLES.ADMIN) {
       return { error: ErrorsMessages.not_authorized }
     }
 
     await model.delete({ where: { id } })
+    revalidatePath(routePath)
   } catch (error) {
     console.error(error)
     return { error: `Erro no sistema ao remover um ${singular}. Entre em contato com nosso time.` }
