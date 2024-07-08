@@ -1,12 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { config } from "../config";
-import { prisma } from "@/lib/prisma";
 import { Table } from "./table";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { SheetForm } from "../(form)/sheet-form";
+import { find } from "@/actions/users";
+import { NotAuthorized } from "@/components/auth/not-authorized";
 
 export default async function Home() {
-  const users = await prisma.user.findMany()
+  const users = await find()
+
+  if ("error" in users) {
+    return users.error
+  }
 
   return (
     <div className="p-8">
@@ -23,7 +28,7 @@ export default async function Home() {
         </Sheet>
       </div>
       <div>
-        <Table data={users} />
+        <Table data={users.data} />
       </div>
     </div>
   );
