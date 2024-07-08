@@ -9,11 +9,16 @@
     "lint": "next lint",
     "test:u": "dotenv -e .env.test -- pnpm vitest",
     "test:i": "dotenv -e .env.test -- pnpm vitest --config ./__tests__/integrations/vitest.config.ts",
-    "migrate:test": "dotenv -e .env.test -- pnpm prisma migrate deploy"
+    "migrate:test": "dotenv -e .env.test -- pnpm prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seeds/dev.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.4.2",
-    "@prisma/client": "5.11.0",
+    "@prisma/client": "5.16.1",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -33,7 +38,6 @@
     "lucide-react": "^0.383.0",
     "next": "14.2.3",
     "next-auth": "4.24",
-    "prisma": "5.11",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.5",
@@ -42,6 +46,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@faker-js/faker": "8.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -49,7 +54,9 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",
+    "prisma": "5.16",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5",
     "vitest": "1.6"
   }
