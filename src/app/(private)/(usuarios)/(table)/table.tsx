@@ -5,7 +5,7 @@ import { User } from "@prisma/client";
 import { TableSearchInput } from "@/components/table/search-input";
 import { TableViewOptions } from "@/components/table/view-options";
 import { TablePagination } from "@/components/table/pagination";
-import { getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table"
+import { getCoreRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
 import { DataTable } from "@/components/table/data-table";
 import { columns } from "./columns";
 
@@ -18,7 +18,8 @@ export function Table({ data }: TableProps) {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel()
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel()
   })
 
   return <div>

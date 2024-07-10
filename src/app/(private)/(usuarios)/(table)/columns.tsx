@@ -10,5 +10,9 @@ export const columns: ColumnDef<Omit<User, 'password'>>[] = [
   { accessorKey: 'name', header: 'Nome' },
   { accessorKey: 'email', header: 'Email' },
   { header: 'Cargo', accessorFn: ({ role }) => getRoleName(role) },
-  { header: 'Criado em', accessorFn: ({ createdAt }) => format(createdAt, 'dd/MM/yyyy HH:mm') }
+  {
+    header: 'Criado em',
+    accessorFn: ({ createdAt }) => format(createdAt, 'dd/MM/yyyy HH:mm'),
+    sortingFn: (rowA, rowB) => rowA.original.createdAt.getTime() - rowB.original.createdAt.getTime()
+  }
 ]

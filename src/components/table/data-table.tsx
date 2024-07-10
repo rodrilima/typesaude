@@ -1,6 +1,6 @@
 import { TableBody, TableCell, TableHead, TableHeader, TableRow, Table as UITable } from "@/components/ui/table";
 import { flexRender, Table } from "@tanstack/react-table";
-import { Filter } from "lucide-react";
+import { ArrowDown, ArrowUp, Filter } from "lucide-react";
 
 interface DataTableProps<TData> {
   table: Table<TData>
@@ -11,10 +11,23 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
     <TableHeader>
       <TableRow>
         {table.getHeaderGroups()[0].headers.map(header => (
-          <TableHead key={header.id}>{flexRender(
-            header.column.columnDef.header,
-            header.getContext()
-          )}</TableHead>
+          <TableHead
+            key={header.id}
+            onClick={header.column.getToggleSortingHandler()}
+            className="cursor-pointer"
+          >
+            <div className="flex items-center gap-1">
+              {{
+                asc: <ArrowUp size={12} />,
+                desc: <ArrowDown size={12} />
+              }[header.column.getIsSorted() as string]}
+
+              {flexRender(
+                header.column.columnDef.header,
+                header.getContext()
+              )}
+            </div>
+          </TableHead>
         ))}
       </TableRow>
       <TableRow>
