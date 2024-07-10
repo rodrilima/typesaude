@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 export const columns: ColumnDef<Omit<User, 'password'>>[] = [
   { id: 'actions', cell: () => <RowActions /> },
-  { accessorKey: 'id', header: 'ID' },
+  { accessorKey: 'id', header: 'ID', filterFn: 'includesString' },
   { accessorKey: 'name', header: 'Nome' },
   { accessorKey: 'email', header: 'Email' },
   { header: 'Cargo', accessorFn: ({ role }) => getRoleName(role) },
