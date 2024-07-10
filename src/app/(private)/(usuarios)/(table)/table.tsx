@@ -5,7 +5,7 @@ import { User } from "@prisma/client";
 import { TableSearchInput } from "@/components/table/search-input";
 import { TableViewOptions } from "@/components/table/view-options";
 import { TablePagination } from "@/components/table/pagination";
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table"
+import { getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table"
 import { DataTable } from "@/components/table/data-table";
 import { columns } from "./columns";
 
@@ -17,7 +17,8 @@ export function Table({ data }: TableProps) {
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel()
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
   })
 
   return <div>
@@ -26,7 +27,7 @@ export function Table({ data }: TableProps) {
         <TableSearchInput />
         <TableViewOptions />
       </div>
-      <TablePagination />
+      <TablePagination table={table} />
     </div>
     <ScrollArea className="rounded-md border h-[calc(80vh-120px)]">
       <DataTable table={table} />
