@@ -1,11 +1,14 @@
 import { Columns } from "lucide-react";
 import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { ScrollArea } from "../ui/scroll-area";
+import { Table } from "@tanstack/react-table";
 
-interface TableViewOptionsProps { }
+interface TableViewOptionsProps<TData> {
+  table: Table<TData>
+}
 
-export function TableViewOptions({ }: TableViewOptionsProps) {
+export function TableViewOptions<TData>({ table }: TableViewOptionsProps<TData>) {
   return <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button size="sm" variant="outline" className="h-10">
@@ -16,7 +19,32 @@ export function TableViewOptions({ }: TableViewOptionsProps) {
       <ScrollArea className="h-60">
         <DropdownMenuLabel>Colunas</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Todas</DropdownMenuItem>
+        <DropdownMenuCheckboxItem
+          checked={table.getIsAllColumnsVisible()}
+          onCheckedChange={(value) => {
+            table.toggleAllColumnsVisible(value)
+            table.getColumn('actions')?.toggleVisibility(true)
+          }}
+          onSelect={(e) => e.preventDefault()}
+        >
+          Todas
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuSeparator />
+        {table
+          .getAllColumns()
+          .filter((column) => column.getCanHide() && column.accessorFn)
+          .map((column) => (
+            <DropdownMenuCheckboxItem
+              key={column.id}
+              checked={column.getIsVisible()}
+              onCheckedChange={(value) => {
+                column.toggleVisibility(value)
+              }}
+              onSelect={(e) => e.preventDefault()}
+            >
+              <>{column.columnDef.header}</>
+            </DropdownMenuCheckboxItem>
+          ))}
       </ScrollArea>
     </DropdownMenuContent>
   </DropdownMenu>

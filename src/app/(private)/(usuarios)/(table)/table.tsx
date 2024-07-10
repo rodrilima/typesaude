@@ -26,7 +26,7 @@ export function Table({ data }: TableProps) {
     <div className="flex items-center justify-between my-5 ">
       <div className="flex gap-2">
         <TableSearchInput />
-        <TableViewOptions />
+        <TableViewOptions table={table} />
       </div>
       <TablePagination table={table} />
     </div>
