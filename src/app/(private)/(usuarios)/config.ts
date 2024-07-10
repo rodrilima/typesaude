@@ -1,3 +1,6 @@
+export type { User as Model } from "@prisma/client"
+export * as actions from "@/actions/users"
+
 export const config = {
   conteudo: {
     tabela: {
@@ -6,8 +9,10 @@ export const config = {
       botaoNovo: "Novo Usuário"
     },
     formulario: {
-      titulo: "Novo Usuário",
-      descricao: "Adicione um novo usuário"
+      tituloNovo: "Novo Usuário",
+      descricaoNovo: "Adicione um novo usuário",
+      tituloEdicao: "Dados do Usuário",
+      descricaoEdicao: "Visualize e edite as informações do usuário"
     }
   }
 }

@@ -18,6 +18,7 @@ export function Table({ data }: TableProps) {
   const table = useReactTable({
     data,
     columns,
+    autoResetAll: false,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),

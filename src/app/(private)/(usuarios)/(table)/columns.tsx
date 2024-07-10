@@ -5,7 +5,7 @@ import { getRoleName } from "@/helpers/roles";
 import { format } from "date-fns";
 
 export const columns: ColumnDef<Omit<User, 'password'>>[] = [
-  { id: 'actions', cell: () => <RowActions /> },
+  { id: 'actions', cell: ({ row }) => <RowActions row={row} /> },
   { accessorKey: 'id', header: 'ID', filterFn: 'includesString' },
   { accessorKey: 'name', header: 'Nome' },
   { accessorKey: 'email', header: 'Email' },
