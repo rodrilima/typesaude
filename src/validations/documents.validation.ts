@@ -3,6 +3,8 @@ import { z } from "zod"
 export const createDocumentValidation = z.object({
   file: z.instanceof(File, { message: "Arquivo inválido" }),
   path: z.string().optional(),
+  userId: z.number().optional().nullable(),
+  consultationId: z.number().optional().nullable(),
 });
 
 export const updateDocumentValidation = z.object({

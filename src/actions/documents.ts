@@ -31,10 +31,14 @@ export async function create(formData: CreateResource): Promise<DefaultReturn<Mo
 
     const file = formData.get('file') as File
     const path = formData.get('path') || "files"
+    const userId = formData.get('userId') ? Number(formData.get('userId')) : undefined
+    const consultationId = formData.get('consultationId') ? Number(formData.get('consultationId')) : undefined
 
     const validation = createDocumentValidation.safeParse({
       file,
-      path
+      path,
+      userId,
+      consultationId
     })
 
     if (validation.error) {
@@ -46,7 +50,9 @@ export async function create(formData: CreateResource): Promise<DefaultReturn<Mo
     const response = await model.create({
       data: {
         type: file.type,
-        url
+        url,
+        userId,
+        consultationId
       }
     })
     revalidatePath(routePath)
