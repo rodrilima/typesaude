@@ -65,7 +65,11 @@ export async function find(): Promise<ListReturn | ErrorReturn> {
       return { error: ErrorsMessages.not_authorized }
     }
 
-    const response = await model.findMany()
+    const response = await model.findMany({
+      orderBy: { 
+        id: 'desc' 
+      }
+    })
 
     const safeResponse = response.map(user => {
       const { password, ...safeUser } = user

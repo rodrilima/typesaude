@@ -58,7 +58,11 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Model>
 
 export async function find(): Promise<ListReturn | ErrorReturn> {
   try {
-    const response = await model.findMany()
+    const response = await model.findMany({
+      orderBy: { 
+        id: 'desc' 
+      }
+    })
     return { data: response }
   } catch (error) {
     console.error(error)
