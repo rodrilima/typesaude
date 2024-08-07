@@ -1,7 +1,6 @@
 "use client"
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { User } from "@prisma/client";
 import { TableSearchInput } from "@/components/table/search-input";
 import { TableViewOptions } from "@/components/table/view-options";
 import { TablePagination } from "@/components/table/pagination";
@@ -9,9 +8,10 @@ import { getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedR
 import { DataTable } from "@/components/table/data-table";
 import { columns } from "./columns";
 import { ClearFilters } from "@/components/table/clear-filters";
+import { Model } from "../config";
 
 interface TableProps {
-  data: Omit<User, 'password'>[]
+  data: Model[]
 }
 
 export function Table({ data }: TableProps) {

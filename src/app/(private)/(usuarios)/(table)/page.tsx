@@ -4,7 +4,6 @@ import { Table } from "./table";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { SheetForm } from "../(form)/sheet-form";
 import { find } from "@/actions/users";
-import { NotAuthorized } from "@/components/auth/not-authorized";
 
 export default async function Home() {
   const users = await find()

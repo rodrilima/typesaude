@@ -12,7 +12,7 @@ import { RemoveDialog } from "@/components/dialog/remove-dialog";
 import { useState } from "react";
 
 interface RowActionsProps {
-  row: Row<Omit<Model, 'password'>>
+  row: Row<Model>
 }
 
 export function RowActions({ row }: RowActionsProps) {

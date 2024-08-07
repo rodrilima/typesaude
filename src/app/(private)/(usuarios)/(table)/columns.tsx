@@ -1,10 +1,10 @@
-import { User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { RowActions } from "./row-actions";
 import { getRoleName } from "@/helpers/roles";
 import { format } from "date-fns";
+import { Model } from "../config";
 
-export const columns: ColumnDef<Omit<User, 'password'>>[] = [
+export const columns: ColumnDef<Model>[] = [
   { id: 'actions', cell: ({ row }) => <RowActions row={row} /> },
   { accessorKey: 'id', header: 'ID', filterFn: 'includesString' },
   { accessorKey: 'name', header: 'Nome' },

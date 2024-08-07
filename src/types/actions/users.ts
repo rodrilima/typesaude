@@ -4,4 +4,5 @@ import { CommonModelProperties } from "./_general";
 export type CreateUser = Omit<User, CommonModelProperties>
 export type UpdateUser = Partial<Omit<User, CommonModelProperties>> & { id: User['id'] }
 
-export type ListReturn = { data: Omit<User, 'password'>[] }
+export type UserItemReturn =  Omit<User, 'password'> & { avatar: { url: string } | null };
+export type ListReturn = { data: UserItemReturn[] }

@@ -1,4 +1,4 @@
-export type { User as Model } from "@prisma/client"
+export type { UserItemReturn as Model } from "@/types/actions/users"
 export * as actions from "@/actions/users"
 
 export const config = {

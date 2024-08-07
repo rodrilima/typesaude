@@ -68,6 +68,13 @@ export async function find(): Promise<ListReturn | ErrorReturn> {
     const response = await model.findMany({
       orderBy: { 
         id: 'desc' 
+      },
+      include: {
+        avatar: {
+          select: {
+            url: true
+          }
+        }
       }
     })
 
