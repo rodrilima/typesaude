@@ -19,6 +19,9 @@ export function Table({ data }: TableProps) {
     data,
     columns,
     autoResetAll: false,
+    initialState: {
+      globalFilter: ""
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
