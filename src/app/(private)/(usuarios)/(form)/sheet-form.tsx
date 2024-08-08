@@ -12,13 +12,14 @@ import { defaultValues } from "./defaultValues";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useToast } from "@/components/ui/use-toast";
 import { ImageForm } from "@/components/form/image-form";
+import { create as createDocument, update as updateDocument } from "@/actions/documents";
 
 interface SheetFormProps {
   dataToUpdate?: Partial<Model>
 }
 
 export function SheetForm({ dataToUpdate }: SheetFormProps) {
-  const form = useForm({
+  const form = useForm<Partial<Model & { avatarFile: File }>>({
     defaultValues: dataToUpdate || defaultValues,
     resolver: zodResolver(dataToUpdate ? config.schemas.update : config.schemas.create)
   })
@@ -45,8 +46,46 @@ export function SheetForm({ dataToUpdate }: SheetFormProps) {
       })
     }
 
+    const avatarFile = form.getValues('avatarFile')
+
+    if (!avatarFile) {
+      return toast({
+        title: "Salvo com sucesso",
+        variant: "success"
+      })
+    }
+
     toast({
-      title: "Salvo com sucesso",
+      title: "Dados salvos, atualizando avatar...",
+      variant: "default"
+    })
+
+    await uploadAvatar(avatarFile, response.data.id.toString())
+  }
+
+  async function uploadAvatar(file: File, userId: string) {
+    const fn = dataToUpdate?.avatar?.id ? updateDocument : createDocument
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.set('userId', userId)
+    formData.set('path', 'avatar')
+
+    if (dataToUpdate?.avatar?.id) {
+      formData.set('id', dataToUpdate.avatar.id.toString())
+    }
+
+    const response = await fn(formData)
+
+    if ("error" in response) {
+      return toast({
+        title: response.error,
+        variant: "destructive"
+      })
+    }
+
+    toast({
+      title: "Dados e avatar salvos com sucesso",
       variant: "success"
     })
   }

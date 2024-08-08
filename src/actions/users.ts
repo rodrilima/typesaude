@@ -72,6 +72,7 @@ export async function find(): Promise<ListReturn | ErrorReturn> {
       include: {
         avatar: {
           select: {
+            id: true,
             url: true
           }
         }
