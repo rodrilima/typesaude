@@ -11,6 +11,7 @@ import { ROLES } from "@/enums/roles";
 import { defaultValues } from "./defaultValues";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useToast } from "@/components/ui/use-toast";
+import { ImageForm } from "@/components/form/image-form";
 
 interface SheetFormProps {
   dataToUpdate?: Partial<Model>
@@ -66,6 +67,7 @@ export function SheetForm({ dataToUpdate }: SheetFormProps) {
             { label: "Editor", value: ROLES.EDITOR },
             { label: "Visitante", value: ROLES.VIEWER },
           ]} />
+          <ImageForm name="avatarFile" label="Avatar" defaultPreview={form.getValues('avatar.url')} />
           <div className="flex justify-end">
             <Button type="submit" className="w-32">Salvar</Button>
           </div>
