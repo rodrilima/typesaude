@@ -5,10 +5,12 @@ import { SelectForm } from "@/components/form/select-form";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { config, Model } from "../config";
+import { actions, config, Model } from "../config";
 import { FormProvider, useForm } from "react-hook-form";
 import { ROLES } from "@/enums/roles";
 import { defaultValues } from "./defaultValues";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useToast } from "@/components/ui/use-toast";
 
 interface SheetFormProps {
   dataToUpdate?: Partial<Model>
@@ -16,8 +18,11 @@ interface SheetFormProps {
 
 export function SheetForm({ dataToUpdate }: SheetFormProps) {
   const form = useForm({
-    defaultValues
+    defaultValues: dataToUpdate || defaultValues,
+    resolver: zodResolver(dataToUpdate ? config.schemas.update : config.schemas.create)
   })
+
+  const { toast } = useToast()
 
   const titulo = dataToUpdate
     ? config.conteudo.formulario.tituloEdicao
@@ -28,7 +33,21 @@ export function SheetForm({ dataToUpdate }: SheetFormProps) {
     : config.conteudo.formulario.descricaoNovo
 
   async function handleSubmit(data: any) {
-    console.info(data)
+    const fn = dataToUpdate ? actions.update : actions.create
+
+    const response = await fn(data)
+
+    if ("error" in response) {
+      return toast({
+        title: response.error,
+        variant: "destructive"
+      })
+    }
+
+    toast({
+      title: "Salvo com sucesso",
+      variant: "success"
+    })
   }
 
   return <SheetContent className="w-full md:min-w-[550px]">
