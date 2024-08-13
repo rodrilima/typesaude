@@ -1,4 +1,5 @@
 import { create, find, remove, update } from "@/actions/documents";
+import { DOCUMENT_PATHS } from "@/enums/document-paths";
 import { ROLES } from "@/enums/roles";
 import { prisma } from "@/lib/prisma"
 import { Document as Model } from "@prisma/client"
@@ -26,7 +27,7 @@ vi.mock("@vercel/blob", () => ({
   del: () => { }
 }))
 
-describe('Integration: Users', () => {
+describe('Integration: Documents', () => {
   let defaultResource: Model
 
   beforeEach(async () => {
@@ -43,6 +44,7 @@ describe('Integration: Users', () => {
     const pathFile = path.resolve(__dirname, '..', '..', 'testdata', 'to-upload.txt')
     const blobFile = new Blob([readFileSync(pathFile)], { type: "text/plain" })
     formData.append('file', blobFile, "teste.txt")
+    formData.set('path', DOCUMENT_PATHS.ATTACHMENT)
 
     const response = await create(formData)
 
@@ -65,6 +67,7 @@ describe('Integration: Users', () => {
     const blobFile = new Blob([readFileSync(pathFile)], { type: "text/plain" })
     formData.append('file', blobFile, "teste.txt")
     formData.set('id', defaultResource.id.toString())
+    formData.set('path', DOCUMENT_PATHS.ATTACHMENT)
 
     const response = await update(formData)
 

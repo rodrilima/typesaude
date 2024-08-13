@@ -47,6 +47,7 @@ export function ImageForm({ label, defaultPreview, ...props }: ImageFormProps & 
             className="hidden"
             placeholder={label}
             type="file"
+            accept="image/*"
             id={props.name}
             onChange={handleImage}
             {...props}

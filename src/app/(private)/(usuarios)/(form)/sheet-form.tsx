@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useToast } from "@/components/ui/use-toast";
 import { ImageForm } from "@/components/form/image-form";
 import { create as createDocument, update as updateDocument } from "@/actions/documents";
+import { DOCUMENT_PATHS } from "@/enums/document-paths";
 
 interface SheetFormProps {
   dataToUpdate?: Partial<Model>
@@ -69,7 +70,7 @@ export function SheetForm({ dataToUpdate }: SheetFormProps) {
     const formData = new FormData()
     formData.append('file', file)
     formData.set('userId', userId)
-    formData.set('path', 'avatar')
+    formData.set('path', DOCUMENT_PATHS.AVATAR)
 
     if (dataToUpdate?.avatar?.id) {
       formData.set('id', dataToUpdate.avatar.id.toString())
