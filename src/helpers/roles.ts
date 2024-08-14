@@ -12,3 +12,8 @@ export function getRoleName(role?: string) {
       return "Desconhecido"
   }
 }
+
+export function canRoleEdit(role?: string) {
+  if(!role) return false;
+  return [ROLES.ADMIN, ROLES.EDITOR].includes(role as ROLES)
+}

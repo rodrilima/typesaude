@@ -10,6 +10,8 @@ import { Model, actions } from "../config";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { RemoveDialog } from "@/components/dialog/remove-dialog";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { canRoleEdit } from "@/helpers/roles";
 
 interface RowActionsProps {
   row: Row<Model>
@@ -17,6 +19,7 @@ interface RowActionsProps {
 
 export function RowActions({ row }: RowActionsProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const { data: session } = useSession()
 
   return <TableActionDropdown open={dropdownOpen} onOpenChange={setDropdownOpen}>
     <Sheet>
@@ -25,10 +28,10 @@ export function RowActions({ row }: RowActionsProps) {
           <Edit className="mr-2 h-4 w-4" />  Abrir
         </DropdownMenuItem>
       </SheetTrigger>
-      <SheetForm dataToUpdate={row.original} />
+      <SheetForm dataToUpdate={row.original} session={session} />
     </Sheet>
 
-    <AlertDialog>
+    {canRoleEdit(session?.user.role) && <AlertDialog>
       <AlertDialogTrigger asChild>
         <DropdownMenuItem onSelect={e => e.preventDefault()}>
           <Trash className="mr-2 h-4 w-4" /> Excluir
@@ -38,6 +41,6 @@ export function RowActions({ row }: RowActionsProps) {
         actions.remove(row.original.id)
         setDropdownOpen(false)
       }} />
-    </AlertDialog>
+    </AlertDialog>}
   </TableActionDropdown>
 }

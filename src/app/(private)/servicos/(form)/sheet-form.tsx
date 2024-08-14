@@ -10,15 +10,19 @@ import { defaultValues } from "./defaultValues";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useToast } from "@/components/ui/use-toast";
 import { TextareaForm } from "@/components/form/textarea-form";
+import { Session } from "next-auth";
+import { canRoleEdit } from "@/helpers/roles";
 
 interface SheetFormProps {
   dataToUpdate?: Partial<Model>
+  session: Session | null
 }
 
-export function SheetForm({ dataToUpdate }: SheetFormProps) {
+export function SheetForm({ dataToUpdate, session }: SheetFormProps) {
   const form = useForm<Partial<Model>>({
     defaultValues: dataToUpdate || defaultValues,
-    resolver: zodResolver(dataToUpdate ? config.schemas.update : config.schemas.create)
+    resolver: zodResolver(dataToUpdate ? config.schemas.update : config.schemas.create),
+    disabled: !canRoleEdit(session?.user.role)
   })
 
   const { toast } = useToast()
@@ -62,7 +66,7 @@ export function SheetForm({ dataToUpdate }: SheetFormProps) {
           <InputForm label="Preço (R$)" name="price" type="number" />
           <InputForm label="Duração (min)" name="duration" type="number" />
           <div className="flex justify-end">
-            <Button type="submit" className="w-32">Salvar</Button>
+            {canRoleEdit(session?.user.role) && <Button type="submit" className="w-32">Salvar</Button>}
           </div>
         </form>
       </FormProvider>
