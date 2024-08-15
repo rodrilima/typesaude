@@ -6,22 +6,6 @@ import { Model } from "../config";
 export const columns: ColumnDef<Model>[] = [
   { id: 'actions', cell: ({ row }) => <RowActions row={row} /> },
   { accessorKey: 'id', header: 'ID', filterFn: 'includesString' },
-  { accessorKey: 'name', header: 'Nome' },
-  { accessorKey: 'description', header: 'Descrição' },
-  {
-    id: 'price',
-    header: 'Preço',
-    accessorFn: ({ price }) => price ? `${Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'brl'
-    }).format(price as number)}` : "Não informado"
-  },
-  {
-    accessorKey: 'duration',
-    header: 'Duração (min)',
-    cell: ({ getValue }) => `${getValue()} min`,
-    filterFn: 'includesString'
-  },
   {
     id: 'createdAt',
     header: 'Criado em',

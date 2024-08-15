@@ -5,18 +5,18 @@ import { ROLES } from "@/enums/roles";
 import { prisma } from "@/lib/prisma";
 import { DefaultReturn, ErrorReturn } from "@/types/actions/_general";
 import {
-  CreateUser as CreateResource,
-  UpdateUser as UpdateResource,
+  CreateModel as CreateResource,
+  UpdateModel as UpdateResource,
   ListReturn,
-} from "@/types/actions/users";
-import { User as Model } from "@prisma/client";
+} from "@/types/actions/_model";
+import { Service as Model } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/config/authOptions";
 import { revalidatePath } from "next/cache";
 
-const model = prisma.user
-const singular = 'usuário'
-const plural = 'usuários'
+const model = prisma.service
+const singular = 'model'
+const plural = 'models'
 const routePath = '/'
 
 export async function create(data: CreateResource): Promise<DefaultReturn<Model> | ErrorReturn> {
