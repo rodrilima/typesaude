@@ -14,6 +14,7 @@ import { Service as Model } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/config/authOptions";
 import { revalidatePath } from "next/cache";
+import { TSelectOption } from "@/types/form";
 
 const model = prisma.service
 const singular = 'serviço'
@@ -95,5 +96,29 @@ export async function remove(id: Model['id']): Promise<void | ErrorReturn> {
   } catch (error) {
     console.error(error)
     return { error: `Erro no sistema ao remover um ${singular}. Entre em contato com nosso time.` }
+  }
+}
+
+export async function getServicesSelectOptions(): Promise<DefaultReturn<TSelectOption[]> | ErrorReturn> {
+  try {
+    const services = await prisma.service.findMany({
+      select: {
+        id: true,
+        name: true
+      },
+      orderBy: {
+        name: 'asc'
+      }
+    })
+
+    const options: TSelectOption[] = services.map(service => ({
+      label: service.name ?? "",
+      value: service.id.toString()
+    }))
+
+    return { data: options }
+  } catch(error) {
+    console.error(error)
+    return { error: `Erro no sistema ao listar ${plural} para o select. Entre em contato com nosso time.` }
   }
 }

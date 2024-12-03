@@ -14,6 +14,9 @@ import { Session } from "next-auth";
 import { canRoleEdit } from "@/helpers/roles";
 import { InputMaskForm } from "@/components/form/input-mask-form";
 import { cpfMask, phoneMask } from "@/helpers/mask";
+import { SelectForm } from "@/components/form/select-form";
+import { getServicesSelectOptions } from "@/actions/services";
+import { AsyncDataForm } from "@/components/form/async-data-form";
 
 interface SheetFormProps {
   dataToUpdate?: Partial<Model>
@@ -68,6 +71,10 @@ export function SheetForm({ dataToUpdate, session }: SheetFormProps) {
           <InputForm label="CRM" name="crm" />
           <InputForm label="Email" name="email" />
           <InputMaskForm label="Telefone" name="phone" mask={phoneMask} />
+          <AsyncDataForm
+            render={(options) => <SelectForm label="Serviços" name="services" options={options} />}
+            fetchFn={getServicesSelectOptions}
+          />
           <div className="flex justify-end">
             {canRoleEdit(session?.user.role) && <Button type="submit" className="w-32">Salvar</Button>}
           </div>

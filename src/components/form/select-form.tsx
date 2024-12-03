@@ -24,7 +24,7 @@ export function SelectForm({ name, label, options = [] }: SelectFormProps) {
               <SelectTrigger className={`col-span-3 ${fieldState.error ? "border-red-500" : ""}`} onBlur={field.onBlur} ref={field.ref}>
                 <SelectValue placeholder="Escolha uma opção" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-56">
                 {options.map(option => (
                   <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                 ))}
