@@ -34,7 +34,10 @@ export async function create(data: CreateResource): Promise<DefaultReturn<Model>
       return { error: validation.error.issues[0].message }
     }
 
-    const response = await model.create({ data })
+    const response = await model.create({ data: {
+      ...data,
+      services: { connect: data.services }
+    } })
     revalidatePath(routePath)
     return { data: response }
   } catch (error) {
@@ -48,6 +51,14 @@ export async function find(): Promise<ListReturn | ErrorReturn> {
     const response = await model.findMany({
       orderBy: { 
         id: 'desc' 
+      },
+      include: {
+        services: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
       }
     })
     return { data: response }
@@ -73,7 +84,10 @@ export async function update(data: UpdateResource): Promise<DefaultReturn<Model>
       return { error: validation.error.issues[0].message }
     }
 
-    const response = await model.update({ where: { id }, data: dataToUpdate })
+    const response = await model.update({ where: { id }, data: {
+      ...dataToUpdate,
+      services: { set: dataToUpdate.services }
+    } })
     revalidatePath(routePath)
     return { data: response }
   } catch (error) {

@@ -17,6 +17,7 @@ import { cpfMask, phoneMask } from "@/helpers/mask";
 import { SelectForm } from "@/components/form/select-form";
 import { getServicesSelectOptions } from "@/actions/services";
 import { AsyncDataForm } from "@/components/form/async-data-form";
+import { MultiSelectForm } from "@/components/form/multi-select-form";
 
 interface SheetFormProps {
   dataToUpdate?: Partial<Model>
@@ -72,7 +73,7 @@ export function SheetForm({ dataToUpdate, session }: SheetFormProps) {
           <InputForm label="Email" name="email" />
           <InputMaskForm label="Telefone" name="phone" mask={phoneMask} />
           <AsyncDataForm
-            render={(options) => <SelectForm label="Serviços" name="services" options={options} />}
+            render={(options) => <MultiSelectForm label="Serviços" name="services" options={options} />}
             fetchFn={getServicesSelectOptions}
           />
           <div className="flex justify-end">

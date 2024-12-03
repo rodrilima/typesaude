@@ -21,6 +21,7 @@ export const createDoctorValidation = z.object({
       .optional())
   ),
   email: zEmptyString(z.string().email("Email inválido.").optional()),
+  services: z.array(z.object({ id: z.coerce.number() })).optional()
 });
 
 export const updateDoctorValidation = z.object({
@@ -47,4 +48,5 @@ export const updateDoctorValidation = z.object({
       .nullable())
   ),
   email: zEmptyString(z.string().email("Email inválido.").optional().nullable()),
+  services: z.array(z.object({ id: z.coerce.number() })).optional()
 });
