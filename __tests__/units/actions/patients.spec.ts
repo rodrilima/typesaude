@@ -65,7 +65,7 @@ describe("Unit: Pacientes", () => {
     const response = await create({
       address: "",
       birth: new Date(),
-      cpf: "",
+      cpf: "1",
       email: "patient@gmail.com",
       name: "teste",
       phone: "12345678910"
@@ -81,7 +81,7 @@ describe("Unit: Pacientes", () => {
 
     const response = await update({
       id: 1,
-      phone: "",
+      phone: "1",
     })
 
     if ("data" in response) throw new Error("Deveria retornar um erro")
