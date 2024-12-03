@@ -11,6 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useToast } from "@/components/ui/use-toast";
 import { Session } from "next-auth";
 import { canRoleEdit } from "@/helpers/roles";
+import { InputMaskForm } from "@/components/form/input-mask-form";
+import { cpfMask, phoneMask } from "@/helpers/mask";
 
 interface SheetFormProps {
   dataToUpdate?: Partial<Model>
@@ -61,9 +63,9 @@ export function SheetForm({ dataToUpdate, session }: SheetFormProps) {
       <FormProvider {...form}>
         <form className="py-4 px-2 space-y-2" onSubmit={form.handleSubmit(handleSubmit)}>
           <InputForm label="Nome" name="name" />
-          <InputForm label="CPF" name="cpf" />
+          <InputMaskForm label="CPF" name="cpf" mask={cpfMask} />
           <InputForm label="Data de Nascimento" name="birth" type="date" />
-          <InputForm label="Telefone" name="phone" />
+          <InputMaskForm label="Telefone" name="phone" mask={phoneMask} />
           <InputForm label="Email" name="email" />
           <InputForm label="Endereço" name="address" />
           <div className="flex justify-end">
